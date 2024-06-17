@@ -1,0 +1,39 @@
+version: '3'
+services:
+  consul:
+    image: consul:1.8.4
+    container_name: artifacts_consul_1
+    ports:
+      - '8500:8500'
+    network_mode: "host"
+    restart: on-failure
+  # vault:
+  #   image: vault:1.5.4
+  #   container_name: artifacts_vault_1
+  #   volumes:
+  #     - ./vault/logs:/vault/logs
+  #     - ./vault/file:/vault/file
+  #     - ./vault/config:/vault/config
+  #   ports:
+  #     - 8400:8400
+  #   depends_on:
+  #     - consul
+  #     - mysql
+  #   network_mode: "host"
+  #   environment:
+  #     - VAULT_TOKEN=myroot
+  #     - VAULT_ADDR=http://localhost:8400
+  #     - VAULT_DEV_ROOT_TOKEN_ID=myroot
+  #   restart: on-failure
+  #   entrypoint: vault server -dev -config=/vault/config/vault-conf.hcl
+
+  redis:
+    image: redis:5.0.6
+    network_mode: "host"
+    container_name: redis-old
+
+  redis-tls:
+    image: redis-tls-test:7.0.15
+    network_mode: "host"
+    container_name: redis-new
+

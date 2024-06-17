@@ -1,0 +1,12 @@
+[sync_reader]
+cluster = false 
+address = "0.0.0.0:6379"
+tls = false
+sync_rdb = true
+sync_aof = true
+
+[redis_writer]
+cluster = false
+address = "0.0.0.0:7380"
+tls = true
+password = "sessionm"
