@@ -10,10 +10,8 @@ import (
 	"go.opentelemetry.io/otel/trace"
 )
 
-const defaultTracerName = "gitlab.sessionm.com/src/github.com/mediocregopher/radix/v4/pool"
+const defaultTracerName = "github.com/mediocregopher/radix/v4/pool"
 
-// Pool wraps a radix pool and adds a nasty tracker to it so that we can keep contextual relations.
-// If we were able to go to go-redis then tracing would be baked in.
 type Pool struct {
 	radix.Client
 	tracer trace.Tracer
@@ -22,9 +20,6 @@ type Pool struct {
 
 type DialFunc func(ctx context.Context, network, addr string) (radix.Conn, error)
 
-// NewCustom is like New except you can specify a DialFunc which will be
-// used when creating new connections for the pool. The common use-case is to do
-// authentication for new connections.
 func NewCustom(ctx context.Context, network, addr string, size int, dialer radix.Dialer) (*Pool, error) {
 	poolConfig := radix.PoolConfig{
 		Dialer: dialer,
@@ -41,15 +36,10 @@ func NewCustom(ctx context.Context, network, addr string, size int, dialer radix
 	return &wrapPool, err
 }
 
-// Cmd automatically gets one client from the pool, executes the given command
-// (returning its result), and puts the client back in the pool
 func (p *Pool) Cmd(resp interface{}, cmd string, args ...string) error {
 	return p.Do(context.Background(), radix.Cmd(resp, cmd, args...))
 }
 
-// CmdCtx is an interim wrapper to pass ctx to tracing.
-// Calls Cmd which automatically gets one client from the pool, executes the given command
-// (returning its result), and puts the client back in the pool
 func (p *Pool) CmdCtx(ctx context.Context, resp interface{}, cmd string, args ...string) error {
 	_, span := p.tracer.Start(ctx, cmd, trace.WithSpanKind(trace.SpanKindClient),
 		trace.WithAttributes(

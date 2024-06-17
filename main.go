@@ -68,7 +68,7 @@ func main() {
 		log.Fatalf("cannot create connection to old redis: %v", err)
 	}
 
-	newPool, err := redisNewPool(ctx, "tcp", "0.0.0.0:7380", "sessionm", 5)
+	newPool, err := redisNewPool(ctx, "tcp", "0.0.0.0:7380", "redis-poc-pwd", 5)
 	if err != nil {
 		log.Fatalf("cannot create connection to new redis: %v", err)
 	}

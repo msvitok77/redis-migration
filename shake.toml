@@ -9,4 +9,4 @@ sync_aof = true
 cluster = false
 address = "0.0.0.0:7380"
 tls = true
-password = "sessionm"
+password = "redis-poc-pwd"
